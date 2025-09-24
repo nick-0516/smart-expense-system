@@ -59,7 +59,7 @@ Built with **Spring Boot 3.5.6**, **Java 21**, **Spring Cloud**, **Kafka**, and 
 
 ### Clone the repository
 ```bash
-git clone https://github.com/<your-username>/smart-expense-system.git
+git clone https://github.com/nick-0516/smart-expense-system.git
 cd smart-expense-system
 ```
 
