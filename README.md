@@ -1,11 +1,11 @@
-# 💰 Smart Expense & Budgeting System
+# Smart Expense & Budgeting System
 
 A microservices-based backend system for tracking daily expenses, managing budgets, sending alerts, and generating financial insights.  
 Built with **Spring Boot 3.5.6**, **Java 21**, **Spring Cloud**, **Kafka**, and **Docker**.
 
 ---
 
-## 🚀 Features
+## Features
 - User authentication with **JWT**
 - Track daily expenses by category
 - Set monthly budgets with alerts
@@ -36,7 +36,7 @@ Built with **Spring Boot 3.5.6**, **Java 21**, **Spring Cloud**, **Kafka**, and 
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 - **Backend**: Java 21, Spring Boot 3.5.6, Spring Data JPA, Spring Security (JWT)
 - **Databases**: MySQL / H2 (per service)
 - **Messaging**: Apache Kafka
@@ -49,7 +49,7 @@ Built with **Spring Boot 3.5.6**, **Java 21**, **Spring Cloud**, **Kafka**, and 
 
 ---
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 - Java 21
