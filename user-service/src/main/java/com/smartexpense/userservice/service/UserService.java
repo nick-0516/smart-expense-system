@@ -46,4 +46,19 @@ public class UserService {
                         .password(user.getPassword())
                         .build();
     }
+
+    public UserDTO updateUser(long id, UserDTO updatedUser){
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
+        user.setName(updatedUser.getName());
+        user.setEmail(updatedUser.getEmail());
+        user.setPassword(updatedUser.getPassword());
+        User newUser = userRepository.save(user);
+        // newUser.setId(user.getId());
+        return UserDTO.builder()
+                        .id(newUser.getId())
+                        .name(newUser.getName())
+                        .email(newUser.getEmail())
+                        .password(newUser.getPassword())
+                        .build();
+    }
 }
