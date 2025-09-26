@@ -1,4 +1,4 @@
-package com.smartexpense.user_service;
+package com.smartexpense.userservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

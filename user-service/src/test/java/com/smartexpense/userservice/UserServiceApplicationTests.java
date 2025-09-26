@@ -1,4 +1,4 @@
-package com.smartexpense.user_service;
+package com.smartexpense.userservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

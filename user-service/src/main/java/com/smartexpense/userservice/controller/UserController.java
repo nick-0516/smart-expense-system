@@ -1,7 +1,7 @@
 package com.smartexpense.userservice.controller;
 
-import com.smartexpense.user.dto.UserDTO;
-import com.smartexpense.user.service.UserService;
+import com.smartexpense.userservice.dto.UserDTO;
+import com.smartexpense.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,8 @@
 package com.smartexpense.userservice.service;
 
-import com.smartexpense.user.dto.UserDTO;
-import com.smartexpense.user.entity.User;
-import com.smartexpense.user.repository.UserRepository;
+import com.smartexpense.userservice.dto.UserDTO;
+import com.smartexpense.userservice.model.User;
+import com.smartexpense.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
