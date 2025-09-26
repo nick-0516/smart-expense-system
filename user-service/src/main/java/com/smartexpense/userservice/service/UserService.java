@@ -3,10 +3,12 @@ package com.smartexpense.userservice.service;
 import com.smartexpense.userservice.dto.UserDTO;
 import com.smartexpense.userservice.model.User;
 import com.smartexpense.userservice.repository.UserRepository;
+import com.smartexpense.userservice.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor // this generates constructor for all 'final' fields
@@ -33,5 +35,15 @@ public class UserService {
                         .password(user.getPassword())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public UserDTO getUserById(long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
+        return UserDTO.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .password(user.getPassword())
+                        .build();
     }
 }
