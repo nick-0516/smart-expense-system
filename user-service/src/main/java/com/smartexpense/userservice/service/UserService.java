@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor // this generates constructor for all 'final' fields
@@ -53,7 +52,7 @@ public class UserService {
         user.setEmail(updatedUser.getEmail());
         user.setPassword(updatedUser.getPassword());
         User newUser = userRepository.save(user);
-        // newUser.setId(user.getId());
+        // newUser.setId(user.getId()); no need for this
         return UserDTO.builder()
                         .id(newUser.getId())
                         .name(newUser.getName())
