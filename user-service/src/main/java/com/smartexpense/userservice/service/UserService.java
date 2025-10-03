@@ -13,16 +13,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor // this generates constructor for all 'final' fields
 public class UserService {
     private final UserRepository userRepository; // lombok gnerates a constructor for this at compile time i.e., Constructor injection
+    private final org.springframework.security.crypto.password.PasswordEncoder encoder;
 
     public UserDTO createUser(UserDTO dto) {
         User user = User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(encoder.encode(dto.getPassword()))
                 .build();
         User saved = userRepository.save(user);
-        dto.setId(saved.getId());
-        return dto;
+        //dto.setId(saved.getId());
+        return UserDTO.builder()
+                .id(saved.getId())
+                .name(saved.getName())
+                .email(saved.getEmail())
+                .password(null) //omit password ideally
+                .build();
     }
 
     public List<UserDTO> getAllUsers() {
