@@ -1,8 +1,11 @@
 package com.smartexpense.userservice.controller;
 
 import com.smartexpense.userservice.dto.UserDTO;
+import com.smartexpense.userservice.dto.UserResponse;
 import com.smartexpense.userservice.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +39,11 @@ public class UserController {
     @PutMapping("{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable long id, @RequestBody UserDTO updatedUser) {
         return ResponseEntity.ok(userService.updateUser(id, updatedUser));
+    }
+
+    @GetMapping("/by-email")
+    public ResponseEntity<UserResponse> getUserByEmail(@RequestParam @Email @NotBlank String email) {
+        return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.smartexpense.userservice.service;
 
 import com.smartexpense.userservice.dto.UserDTO;
+import com.smartexpense.userservice.dto.UserResponse;
 import com.smartexpense.userservice.model.User;
 import com.smartexpense.userservice.repository.UserRepository;
 import com.smartexpense.userservice.exception.ResourceNotFoundException;
@@ -50,6 +51,11 @@ public class UserService {
                         .email(user.getEmail())
                         .password(user.getPassword())
                         .build();
+    }
+
+    public UserResponse getUserByEmail(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found with Email: " + email));
+        return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
 
     public UserDTO updateUser(long id, UserDTO updatedUser){
