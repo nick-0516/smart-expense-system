@@ -10,7 +10,7 @@ public final class ExpenseMapper {
         if (dto == null) return null;
         return Expense.builder()
                 .id(dto.getId())
-                .userId(dto.getUserId())
+                //.userId(dto.getUserId())
                 .category(dto.getCategory())
                 .amount(dto.getAmount())
                 .expenseDate(dto.getExpenseDate())
@@ -22,7 +22,7 @@ public final class ExpenseMapper {
         if (e == null) return null;
         return ExpenseDTO.builder()
                 .id(e.getId())
-                .userId(e.getUserId())
+                //.userId(e.getUserId())
                 .category(e.getCategory())
                 .amount(e.getAmount())
                 .expenseDate(e.getExpenseDate())

@@ -13,8 +13,8 @@ import java.time.LocalDate;
 public class ExpenseDTO {
     private Long id;
 
-    @NotNull
-    private Long userId; // Part A only; Part B will ignore this and use JWT
+//    @NotNull
+//    private Long userId;  //this is not rewuired anymore, this is being retreived from user-service
 
     @NotNull
     private Category category;

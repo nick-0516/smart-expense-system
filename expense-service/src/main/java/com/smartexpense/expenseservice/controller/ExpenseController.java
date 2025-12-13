@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -21,41 +22,51 @@ public class ExpenseController {
 
     @PostMapping
     public ResponseEntity<ExpenseDTO> create(@RequestBody @Valid ExpenseDTO dto) {
-        var created = service.create(dto);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var created = service.createForEmail(dto, email);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+    @GetMapping("/myExpenses")
+    public List<ExpenseDTO> getMyExpenses() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return service.getByUserEmail(email);
     }
 
     @GetMapping("/{id}")
     public ExpenseDTO getById(@PathVariable Long id) {
-        return service.getById(id);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return service.getByIdForEmail(id, email);
     }
 
-    @GetMapping
-    public List<ExpenseDTO> getByUser(@RequestParam Long userId) {
-        return service.getByUser(userId);
-    }
+//    @GetMapping
+//    public List<ExpenseDTO> getByUser(@RequestParam Long userId) {
+//        return service.getByUser(userId);
+//    }
 
     @GetMapping("/by-date")
     public List<ExpenseDTO> byDate(
-            @RequestParam Long userId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        return service.getByDateRange(userId, from, to);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return service.getByDateRangeForEmail(email, from, to);
     }
 
     @GetMapping("/by-category")
-    public List<ExpenseDTO> byCategory(@RequestParam Long userId, @RequestParam Category category) {
-        return service.getByCategory(userId, category);
+    public List<ExpenseDTO> byCategory(@RequestParam Category category) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return service.getByCategoryForEmail(email, category);
     }
 
     @PutMapping("/{id}")
     public ExpenseDTO update(@PathVariable Long id, @RequestBody @Valid ExpenseDTO dto) {
-        return service.update(id, dto);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return service.updateForEmail(id, dto, email);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        service.delete(id);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        service.deleteForEmail(id, email);
     }
 }
