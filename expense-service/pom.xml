@@ -12,7 +12,7 @@
 	<artifactId>expenseservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>expenseservice</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Expense Service for Smart Expense System</description>
 	<url/>
 	<licenses>
 		<license/>
