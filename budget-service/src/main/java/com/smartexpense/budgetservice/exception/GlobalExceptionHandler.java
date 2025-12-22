@@ -37,9 +37,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleRuntimeException (RuntimeException ex, HttpServletRequest req){
+    public ErrorResponse handleIllegalStateException (RuntimeException ex, HttpServletRequest req){
         return new ErrorResponse(
                 Instant.now(),
                 HttpStatus.BAD_REQUEST.value(),
