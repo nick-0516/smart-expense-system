@@ -32,6 +32,7 @@ public class Budget {
 
     private BigDecimal monthlyLimit;
 
+    @Column(name = "budget_month")
     private String month; // yyyy-MM
 
     private LocalDateTime createdAt;
