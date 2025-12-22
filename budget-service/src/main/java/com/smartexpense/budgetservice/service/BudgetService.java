@@ -1,12 +1,15 @@
 package com.smartexpense.budgetservice.service;
-
+import com.smartexpense.budgetservice.client.UserClient;
+import com.smartexpense.budgetservice.client.dto.UserResponse;
 import com.smartexpense.budgetservice.dto.BudgetRequestDTO;
 import com.smartexpense.budgetservice.dto.BudgetResponseDTO;
+import com.smartexpense.budgetservice.exception.ResourceNotFoundException;
 import com.smartexpense.budgetservice.model.Budget;
 import com.smartexpense.budgetservice.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,14 +18,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BudgetService {
 
-    private final BudgetRepository repo;
+    private final BudgetRepository repository;
+    private final UserClient userClient;
 
-    public BudgetResponseDTO create(BudgetRequestDTO dto, Long userId) {
+    @Transactional
+    public BudgetResponseDTO create(BudgetRequestDTO dto, String email) {
 
-        repo.findByUserIdAndCategoryAndMonth(
+        Long userId = resolveUserId(email);
+
+        repository.findByUserIdAndCategoryAndMonth(
                 userId, dto.getCategory(), dto.getMonth()
         ).ifPresent(b -> {
-            throw new RuntimeException("Budget already exists");
+            throw new IllegalStateException("Budget already exists for this category and month");
         });
 
         Budget budget = Budget.builder()
@@ -34,45 +41,71 @@ public class BudgetService {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        return map(repo.save(budget));
+        return toDTO(repository.save(budget));
     }
 
-    public List<BudgetResponseDTO> getMyBudgets(Long userId, String month) {
-        return repo.findByUserIdAndMonth(userId, month)
+    @Transactional(readOnly = true)
+    public List<BudgetResponseDTO> getByMonth(String month, String email) {
+
+        Long userId = resolveUserId(email);
+
+        return repository.findByUserIdAndMonth(userId, month)
                 .stream()
-                .map(this::map)
+                .map(this::toDTO)
                 .toList();
     }
 
-    public BudgetResponseDTO update(Long id, BudgetRequestDTO dto, Long userId) {
-        Budget budget = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Budget not found"));
+    @Transactional
+    public BudgetResponseDTO update(Long id, BudgetRequestDTO dto, String email) {
 
-        if (!budget.getUserId().equals(userId))
-            throw new AccessDeniedException("Not your budget");
+        Budget budget = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Budget not found: " + id));
+
+        Long userId = resolveUserId(email);
+
+        if (!budget.getUserId().equals(userId)) {
+            throw new AccessDeniedException("Not your budget, You are not allowed to update this budget");
+        }
 
         budget.setMonthlyLimit(dto.getMonthlyLimit());
         budget.setUpdatedAt(LocalDateTime.now());
 
-        return map(repo.save(budget));
+        return toDTO(repository.save(budget));
     }
 
-    public void delete(Long id, Long userId) {
-        Budget budget = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Budget not found"));
+    @Transactional
+    public void delete(Long id, String email) {
 
-        if (!budget.getUserId().equals(userId))
-            throw new AccessDeniedException("Not your budget");
+        Budget budget = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Budget not found: " + id));
 
-        repo.delete(budget);
+        Long userId = resolveUserId(email);
+
+        if (!budget.getUserId().equals(userId)) {
+            throw new AccessDeniedException("Not your budget, You are not allowed to update this budget");
+        }
+
+        repository.delete(budget);
     }
 
-    private BudgetResponseDTO map(Budget b) {
+    //helper methods
+    private Long resolveUserId(String email) {
+        try {
+            UserResponse user = userClient.getByEmail(email);
+            if (user == null) {
+                throw new ResourceNotFoundException("User not found with email: " + email);
+            }
+            return user.id();
+        } catch (Exception ex) {
+            throw new ResourceNotFoundException("User not found with email: " + email);
+        }
+    }
+    private BudgetResponseDTO toDTO(Budget budget) {
         return BudgetResponseDTO.builder()
-                .id(b.getId())
-                .category(b.getCategory())
-                .monthlyLimit(b.getMonthlyLimit())
-                .month(b.getMonth())
+                .id(budget.getId())
+                .category(budget.getCategory())
+                .monthlyLimit(budget.getMonthlyLimit())
+                .month(budget.getMonth())
                 .build();
     }
 }
