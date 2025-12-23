@@ -4,6 +4,11 @@
 #!**/src/main/**/target/
 #!**/src/test/**/target/
 #
+# H2 file-based databases
+**/data/
+**/*.mv.db
+**/*.trace.db
+
 #### STS ###
 #.apt_generated
 #.classpath
