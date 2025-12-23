@@ -5,25 +5,39 @@ on:
     branches: [ main ]
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      user: ${{ steps.filter.outputs.user }}
+      expense: ${{ steps.filter.outputs.expense }}
+      shared: ${{ steps.filter.outputs.shared }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            user:
+              - 'user-service/**'
+            expense:
+              - 'expense-service/**'
+            shared:
+              - 'pom.xml'
 
   deploy-user-service:
+    needs: changes
+    if: needs.changes.outputs.user == 'true' || needs.changes.outputs.shared == 'true'
     runs-on: self-hosted
-    if: |
-      contains(join(github.event.head_commit.modified, ' '), 'user-service/') ||
-      contains(join(github.event.head_commit.added, ' '), 'user-service/') ||
-      contains(join(github.event.head_commit.removed, ' '), 'user-service/') ||
-      contains(join(github.event.head_commit.modified, ' '), 'pom.xml')
     steps:
       - name: Deploy User Service
         run: bash ~/microservices/smart-expense-system/user-service/deploy.sh
 
   deploy-expense-service:
+    needs: changes
+    if: needs.changes.outputs.expense == 'true' || needs.changes.outputs.shared == 'true'
     runs-on: self-hosted
-    if: |
-      contains(join(github.event.head_commit.modified, ' '), 'expense-service/') ||
-      contains(join(github.event.head_commit.added, ' '), 'expense-service/') ||
-      contains(join(github.event.head_commit.removed, ' '), 'expense-service/') ||
-      contains(join(github.event.head_commit.modified, ' '), 'pom.xml')
     steps:
       - name: Deploy Expense Service
         run: bash ~/microservices/smart-expense-system/expense-service/deploy.sh
