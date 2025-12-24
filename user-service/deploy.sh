@@ -1,15 +1,15 @@
 #!/bin/bash
+set -e
+
 cd ~/microservices/smart-expense-system/user-service
 
 echo "Pulling latest code..."
 git pull
 
 echo "Building project..."
-mvn clean package -DskipTests
+mvn clean package -DskipTests -pl user-service -am
 
-echo "Stopping old instance..."
-pkill -f "user-service-0.0.1-SNAPSHOT.jar"
+echo "Restarting user-service via systemd..."
+sudo systemctl restart user-service
 
-echo "Starting new instance..."
-nohup java -jar target/user-service-0.0.1-SNAPSHOT.jar --server.port=8081 > app.log 2>&1 &
-
+echo "User service restarted successfully"
