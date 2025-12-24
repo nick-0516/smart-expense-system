@@ -7,7 +7,7 @@ echo "Pulling latest code..."
 git pull
 
 echo "Building project..."
-mvn clean package -DskipTests -pl user-service -am
+mvn clean package -DskipTests
 
 echo "Restarting user-service via systemd..."
 sudo systemctl restart user-service

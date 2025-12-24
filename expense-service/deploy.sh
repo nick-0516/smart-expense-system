@@ -7,7 +7,7 @@ echo "Pulling latest code..."
 git pull
 
 echo "Building project..."
-mvn clean package -DskipTests -pl expense-service -am
+mvn clean package -DskipTests
 
 echo "Restarting expense-service via systemd..."
 sudo systemctl restart expense-service
