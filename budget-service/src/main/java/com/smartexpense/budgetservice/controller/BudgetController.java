@@ -31,7 +31,6 @@ public class BudgetController {
     @GetMapping("/me")
     public List<BudgetResponseDTO> getMyBudgets(
             @RequestParam String month) {
-
         return budgetService.getByMonth(month, getEmail());
     }
 
@@ -49,10 +48,12 @@ public class BudgetController {
         budgetService.delete(id, getEmail());
     }
 
+
     private String getEmail() {
-        return SecurityContextHolder
-                .getContext()
+        String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
+
+        return email;
     }
 }
