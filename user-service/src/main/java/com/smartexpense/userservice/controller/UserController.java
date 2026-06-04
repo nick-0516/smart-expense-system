@@ -22,22 +22,22 @@ public class UserController {
     private final UserService userService; // Constructor injection through lombok - @RequiredArgsConstructor
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(userService.createUser(userDTO));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable long id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
     
     @PutMapping("{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable long id, @RequestBody UserDTO updatedUser) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable long id, @RequestBody UserDTO updatedUser) {
         return ResponseEntity.ok(userService.updateUser(id, updatedUser));
     }
 

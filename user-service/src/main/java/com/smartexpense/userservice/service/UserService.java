@@ -16,7 +16,7 @@ public class UserService {
     private final UserRepository userRepository; // lombok gnerates a constructor for this at compile time i.e., Constructor injection
     private final org.springframework.security.crypto.password.PasswordEncoder encoder;
 
-    public UserDTO createUser(UserDTO dto) {
+    public UserResponse createUser(UserDTO dto) {
         User user = User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
@@ -24,33 +24,22 @@ public class UserService {
                 .build();
         User saved = userRepository.save(user);
         //dto.setId(saved.getId());
-        return UserDTO.builder()
-                .id(saved.getId())
-                .name(saved.getName())
-                .email(saved.getEmail())
-                .password(null) //omit password ideally
-                .build();
+        return new UserResponse(saved.getId(), saved.getName(), saved.getEmail());
     }
 
-    public List<UserDTO> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(user -> UserDTO.builder()
-                        .id(user.getId())
-                        .name(user.getName())
-                        .email(user.getEmail())
-                        .password(user.getPassword())
-                        .build())
+                .map(user -> new UserResponse(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail()
+                ))
                 .collect(Collectors.toList());
     }
 
-    public UserDTO getUserById(long id){
+    public UserResponse getUserById(long id){
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
-        return UserDTO.builder()
-                        .id(user.getId())
-                        .name(user.getName())
-                        .email(user.getEmail())
-                        .password(user.getPassword())
-                        .build();
+        return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
 
     public UserResponse getUserByEmail(String email){
@@ -58,18 +47,13 @@ public class UserService {
         return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
 
-    public UserDTO updateUser(long id, UserDTO updatedUser){
+    public UserResponse updateUser(long id, UserDTO updatedUser){
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
         user.setName(updatedUser.getName());
         user.setEmail(updatedUser.getEmail());
-        user.setPassword(updatedUser.getPassword());
+        user.setPassword(encoder.encode(updatedUser.getPassword()));
         User newUser = userRepository.save(user);
         // newUser.setId(user.getId()); no need for this
-        return UserDTO.builder()
-                        .id(newUser.getId())
-                        .name(newUser.getName())
-                        .email(newUser.getEmail())
-                        .password(newUser.getPassword())
-                        .build();
+        return new UserResponse(newUser.getId(), newUser.getName(), newUser.getEmail());
     }
 }
