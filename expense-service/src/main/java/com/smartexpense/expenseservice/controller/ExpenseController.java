@@ -28,7 +28,10 @@ public class ExpenseController {
     }
     @GetMapping("/myExpenses")
     public List<ExpenseDTO> getMyExpenses() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email =
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName();
         return service.getByUserEmail(email);
     }
 
@@ -37,11 +40,6 @@ public class ExpenseController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return service.getByIdForEmail(id, email);
     }
-
-//    @GetMapping
-//    public List<ExpenseDTO> getByUser(@RequestParam Long userId) {
-//        return service.getByUser(userId);
-//    }
 
     @GetMapping("/by-date")
     public List<ExpenseDTO> byDate(
